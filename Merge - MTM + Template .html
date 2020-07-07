@@ -13076,15 +13076,19 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Import Packages</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">MTM</span>
 <span class="kn">from</span> <span class="nn">MTM</span> <span class="kn">import</span> <span class="n">matchTemplates</span><span class="p">,</span> <span class="n">drawBoxesOnRGB</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">skimage</span>
 </pre></div>
 
     </div>
@@ -13094,16 +13098,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">img_rgb</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/2019-07-22_0900(2)dash.jpg&#39;</span><span class="p">)</span>
-<span class="n">img_gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
-<span class="n">SampleImg</span> <span class="o">=</span> <span class="n">img_gray</span>
-<span class="n">template</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/dash.jpg&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">template2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/dash2.gif&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">listTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;T1&quot;</span><span class="p">,</span> <span class="n">template1</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;T2&quot;</span><span class="p">,</span> <span class="n">template2</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Help Doc</span>
+matchTemplates<span class="o">?</span>
 </pre></div>
 
     </div>
@@ -13113,14 +13112,69 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">img_gray</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_CCOEFF_NORMED</span><span class="p">)</span>
-<span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.8</span>
-<span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">res</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">loc</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img_rgb</span><span class="p">,</span> <span class="n">pt</span><span class="p">,</span> <span class="p">(</span><span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Import and Format Pictures</span>
+
+<span class="n">ColorImg</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/2019-07-22_0900(2)dash.jpg&#39;</span><span class="p">)</span>
+<span class="n">SampleImg</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">ColorImg</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+
+<span class="n">Template1Color</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/dash.jpg&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Template1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">Template1Color</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+<span class="n">Template2Color</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/dash2.gif&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Template2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">Template2Color</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+
+<span class="n">listTemplates</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;T1&quot;</span><span class="p">,</span> <span class="n">Template1</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;T2&quot;</span><span class="p">,</span> <span class="n">Template2</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">TypeError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-49-a9c0d4126859&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">      6</span> Template1Color <span class="ansi-yellow-intense-fg ansi-bold">=</span> cv2<span class="ansi-yellow-intense-fg ansi-bold">.</span>imread<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/dash.jpg&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span><span class="ansi-cyan-intense-fg ansi-bold">0</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">      7</span> <span class="ansi-red-intense-fg ansi-bold">#Template1 = cv2.cvtColor(Template1Color, cv2.COLOR_BGR2GRAY)</span>
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 8</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>cv2<span class="ansi-yellow-intense-fg ansi-bold">.</span>imshow<span class="ansi-yellow-intense-fg ansi-bold">(</span>Template1Color<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">      9</span> Template2Color <span class="ansi-yellow-intense-fg ansi-bold">=</span> cv2<span class="ansi-yellow-intense-fg ansi-bold">.</span>imread<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/dash2.gif&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span><span class="ansi-cyan-intense-fg ansi-bold">0</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">     10</span> <span class="ansi-red-intense-fg ansi-bold">#Template2 = cv2.cvtColor(Template2Color, cv2.COLOR_BGR2GRAY)</span>
+
+<span class="ansi-red-intense-fg ansi-bold">TypeError</span>: imshow() missing required argument &#39;mat&#39; (pos 2)</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Match Templates to Sample Image</span>
+
+<span class="n">Match</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">matchTemplate</span><span class="p">(</span><span class="n">SampleImg</span><span class="p">,</span> <span class="n">Template1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TM_CCOEFF_NORMED</span><span class="p">)</span>
+<span class="n">Threshold</span> <span class="o">=</span> <span class="mf">0.8</span>
+
+<span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">Template1</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">Location</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">Match</span> <span class="o">&gt;=</span><span class="n">Threshold</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">PT</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">Location</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">ColorImg</span><span class="p">,</span> <span class="n">PT</span><span class="p">,</span> <span class="p">(</span><span class="n">PT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">PT</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13130,11 +13184,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cv2</span><span class="o">.</span><span class="n">namedWindow</span><span class="p">(</span><span class="s1">&#39;Detected&#39;</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">WINDOW_NORMAL</span><span class="p">)</span>
-<span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Detected&#39;</span><span class="p">,</span><span class="n">img_rgb</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Show Hits</span>
+
+<span class="n">cv2</span><span class="o">.</span><span class="n">namedWindow</span><span class="p">(</span><span class="s1">&#39;Detected&#39;</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">WINDOW_NORMAL</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Detected&#39;</span><span class="p">,</span> <span class="n">ColorImg</span><span class="p">)</span>
 <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
 </pre></div>
@@ -13146,15 +13202,22 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Hits = np.where</span>
-<span class="n">Hits</span> <span class="o">=</span> <span class="n">res</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">{}</span><span class="s2"> hits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">Hits</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
-<span class="n">Overlay</span> <span class="o">=</span> <span class="n">drawBoxesOnRGB</span><span class="p">(</span><span class="n">SampleImg</span><span class="p">,</span> <span class="n">Hits</span><span class="p">,</span> <span class="n">showLabel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">Hits</span>
-<span class="c1">#plt.imshow(Hits)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Create Coordinates</span>
+
+<span class="n">Height</span><span class="p">,</span> <span class="n">Width</span> <span class="o">=</span> <span class="n">Template1</span><span class="o">.</span><span class="n">shape</span><span class="p">[::]</span>
+<span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">min_loc</span><span class="p">,</span> <span class="n">max_loc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">minMaxLoc</span><span class="p">(</span><span class="n">Match</span><span class="p">)</span>
+<span class="n">TopLeft</span> <span class="o">=</span> <span class="n">min_loc</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">Width</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">Height</span>
+<span class="n">BottomRight</span> <span class="o">=</span> <span class="p">(</span><span class="n">TopLeft</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">Width</span><span class="p">,</span> <span class="n">TopLeft</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">Height</span><span class="p">)</span>
+    
+<span class="n">PrintBerg</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">ColorImg</span><span class="p">,</span> <span class="n">TopLeft</span><span class="p">,</span> <span class="n">BottomRight</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">((</span><span class="n">PrintBerg</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">{}</span><span class="s2"> Matches&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">Match</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13171,10 +13234,93 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Found 2 hits
+<pre>[[[239 242 240]
+  [239 242 240]
+  [239 242 240]
+  ...
+  [144 163  78]
+  [145 164  79]
+  [143 162  77]]
+
+ [[239 242 240]
+  [239 242 240]
+  [239 242 240]
+  ...
+  [144 163  78]
+  [145 164  79]
+  [144 163  78]]
+
+ [[239 242 240]
+  [239 242 240]
+  [239 242 240]
+  ...
+  [142 161  76]
+  [145 164  79]
+  [145 164  79]]
+
+ ...
+
+ [[238 240 170]
+  [239 241 171]
+  [239 241 171]
+  ...
+  [141 147  40]
+  [144 148  43]
+  [144 148  43]]
+
+ [[238 240 170]
+  [238 240 170]
+  [238 241 169]
+  ...
+  [136 141  36]
+  [138 141  38]
+  [139 142  39]]
+
+ [[239 241 171]
+  [238 240 170]
+  [237 240 168]
+  ...
+  [131 136  31]
+  [133 136  33]
+  [136 139  36]]]
+Found 1937 Matches
 </pre>
 </div>
 </div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">SimgF</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/2019-07-22_0900(2)dash.jpg&#39;</span><span class="p">)</span>
+<span class="n">SimgF</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">img_as_float32</span><span class="p">(</span><span class="n">SimgF</span><span class="p">)</span>
+
+<span class="n">TempF</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;C:/Users/Beth/Desktop/JL Lab/Egregious Pictures/Aww yikes/dash.jpg&#39;</span><span class="p">)</span>
+<span class="n">TempF</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">img_as_float32</span><span class="p">(</span><span class="n">TempF</span><span class="p">)</span>
+
+<span class="n">Hits</span> <span class="o">=</span> <span class="n">matchTemplates</span><span class="p">(</span>
+    <span class="n">Template1</span><span class="p">,</span>
+    <span class="n">SampleImg</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">TM_CCOEFF_NORMED</span><span class="p">,</span>
+    <span class="n">score_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">maxOverlap</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+    <span class="n">searchBox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+    <span class="c1">#Is it becuase the images are not floated?</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
 
 <div class="output_area">
 
@@ -13184,22 +13330,106 @@ div#notebook {
 <div class="output_subarea output_text output_error">
 <pre>
 <span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
-<span class="ansi-red-intense-fg ansi-bold">AttributeError</span>                            Traceback (most recent call last)
-<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-66-ac2f7958a2da&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">      2</span> Hits <span class="ansi-yellow-intense-fg ansi-bold">=</span> res
-<span class="ansi-green-fg">      3</span> print<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#34;Found {} hits&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">.</span>format<span class="ansi-yellow-intense-fg ansi-bold">(</span> len<span class="ansi-yellow-intense-fg ansi-bold">(</span>Hits<span class="ansi-yellow-intense-fg ansi-bold">)</span> <span class="ansi-yellow-intense-fg ansi-bold">)</span> <span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">----&gt; 4</span><span class="ansi-yellow-intense-fg ansi-bold"> </span>Overlay <span class="ansi-yellow-intense-fg ansi-bold">=</span> drawBoxesOnRGB<span class="ansi-yellow-intense-fg ansi-bold">(</span>SampleImg<span class="ansi-yellow-intense-fg ansi-bold">,</span> Hits<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">      5</span> <span class="ansi-red-intense-fg ansi-bold">##showLabel=True)</span>
-<span class="ansi-green-fg">      6</span> Hits
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>                                Traceback (most recent call last)
+<span class="ansi-green-intense-fg ansi-bold">&lt;ipython-input-46-8ccfb375fd8f&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">     11</span>     score_threshold<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-cyan-intense-fg ansi-bold">0.5</span><span class="ansi-yellow-intense-fg ansi-bold">,</span>
+<span class="ansi-green-fg">     12</span>     maxOverlap<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-cyan-intense-fg ansi-bold">0.25</span><span class="ansi-yellow-intense-fg ansi-bold">,</span>
+<span class="ansi-green-intense-fg ansi-bold">---&gt; 13</span><span class="ansi-yellow-intense-fg ansi-bold">     </span>searchBox<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">,</span>
+<span class="ansi-green-fg">     14</span> )
+<span class="ansi-green-fg">     15</span>     <span class="ansi-red-intense-fg ansi-bold">#Is it becuase the images are not floated?</span>
 
-<span class="ansi-green-intense-fg ansi-bold">~\AppData\Roaming\Python\Python37\site-packages\MTM\__init__.py</span> in <span class="ansi-cyan-fg">drawBoxesOnRGB</span><span class="ansi-blue-intense-fg ansi-bold">(image, tableHit, boxThickness, boxColor, showLabel, labelColor, labelScale)</span>
-<span class="ansi-green-fg">    210</span>     <span class="ansi-green-intense-fg ansi-bold">else</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>               outImage <span class="ansi-yellow-intense-fg ansi-bold">=</span> image<span class="ansi-yellow-intense-fg ansi-bold">.</span>copy<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-fg">    211</span> 
-<span class="ansi-green-intense-fg ansi-bold">--&gt; 212</span><span class="ansi-yellow-intense-fg ansi-bold">     </span><span class="ansi-green-intense-fg ansi-bold">for</span> index<span class="ansi-yellow-intense-fg ansi-bold">,</span> row <span class="ansi-green-intense-fg ansi-bold">in</span> tableHit<span class="ansi-yellow-intense-fg ansi-bold">.</span>iterrows<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">    213</span>         x<span class="ansi-yellow-intense-fg ansi-bold">,</span>y<span class="ansi-yellow-intense-fg ansi-bold">,</span>w<span class="ansi-yellow-intense-fg ansi-bold">,</span>h <span class="ansi-yellow-intense-fg ansi-bold">=</span> row<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;BBox&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span>
-<span class="ansi-green-fg">    214</span>         cv2<span class="ansi-yellow-intense-fg ansi-bold">.</span>rectangle<span class="ansi-yellow-intense-fg ansi-bold">(</span>outImage<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">(</span>x<span class="ansi-yellow-intense-fg ansi-bold">,</span> y<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">(</span>x<span class="ansi-yellow-intense-fg ansi-bold">+</span>w<span class="ansi-yellow-intense-fg ansi-bold">,</span> y<span class="ansi-yellow-intense-fg ansi-bold">+</span>h<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> color<span class="ansi-yellow-intense-fg ansi-bold">=</span>boxColor<span class="ansi-yellow-intense-fg ansi-bold">,</span> thickness<span class="ansi-yellow-intense-fg ansi-bold">=</span>boxThickness<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-intense-fg ansi-bold">~\AppData\Roaming\Python\Python37\site-packages\MTM\__init__.py</span> in <span class="ansi-cyan-fg">matchTemplates</span><span class="ansi-blue-intense-fg ansi-bold">(listTemplates, image, method, N_object, score_threshold, maxOverlap, searchBox)</span>
+<span class="ansi-green-fg">    175</span>         <span class="ansi-green-intense-fg ansi-bold">raise</span> ValueError<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#34;Maximal overlap between bounding box is in range [0-1]&#34;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">    176</span> 
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 177</span><span class="ansi-yellow-intense-fg ansi-bold">     </span>tableHit <span class="ansi-yellow-intense-fg ansi-bold">=</span> findMatches<span class="ansi-yellow-intense-fg ansi-bold">(</span>listTemplates<span class="ansi-yellow-intense-fg ansi-bold">,</span> image<span class="ansi-yellow-intense-fg ansi-bold">,</span> method<span class="ansi-yellow-intense-fg ansi-bold">,</span> N_object<span class="ansi-yellow-intense-fg ansi-bold">,</span> score_threshold<span class="ansi-yellow-intense-fg ansi-bold">,</span> searchBox<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<span class="ansi-green-fg">    178</span> 
+<span class="ansi-green-fg">    179</span>     <span class="ansi-green-intense-fg ansi-bold">if</span> method <span class="ansi-yellow-intense-fg ansi-bold">==</span> <span class="ansi-cyan-intense-fg ansi-bold">1</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>       bestHits <span class="ansi-yellow-intense-fg ansi-bold">=</span> NMS<span class="ansi-yellow-intense-fg ansi-bold">(</span>tableHit<span class="ansi-yellow-intense-fg ansi-bold">,</span> N_object<span class="ansi-yellow-intense-fg ansi-bold">=</span>N_object<span class="ansi-yellow-intense-fg ansi-bold">,</span> maxOverlap<span class="ansi-yellow-intense-fg ansi-bold">=</span>maxOverlap<span class="ansi-yellow-intense-fg ansi-bold">,</span> sortAscending<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-green-intense-fg ansi-bold">True</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
 
-<span class="ansi-red-intense-fg ansi-bold">AttributeError</span>: &#39;tuple&#39; object has no attribute &#39;iterrows&#39;</pre>
+<span class="ansi-green-intense-fg ansi-bold">~\AppData\Roaming\Python\Python37\site-packages\MTM\__init__.py</span> in <span class="ansi-cyan-fg">findMatches</span><span class="ansi-blue-intense-fg ansi-bold">(listTemplates, image, method, N_object, score_threshold, searchBox)</span>
+<span class="ansi-green-fg">    101</span> 
+<span class="ansi-green-fg">    102</span>     listHit <span class="ansi-yellow-intense-fg ansi-bold">=</span> <span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-yellow-intense-fg ansi-bold">]</span>
+<span class="ansi-green-intense-fg ansi-bold">--&gt; 103</span><span class="ansi-yellow-intense-fg ansi-bold">     </span><span class="ansi-green-intense-fg ansi-bold">for</span> templateName<span class="ansi-yellow-intense-fg ansi-bold">,</span> template <span class="ansi-green-intense-fg ansi-bold">in</span> listTemplates<span class="ansi-yellow-intense-fg ansi-bold">:</span>
+<span class="ansi-green-fg">    104</span> 
+<span class="ansi-green-fg">    105</span>         <span class="ansi-red-intense-fg ansi-bold">#print(&#39;\nSearch with template : &#39;,templateName)</span>
+
+<span class="ansi-red-intense-fg ansi-bold">ValueError</span>: too many values to unpack (expected 2)</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Print Results to Excel Spread Sheet</span>
+
+<span class="n">PrintBerg</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Match</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">PrintBerg</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">PrintBerg</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;C:/Users/Beth/Desktop/PrintBerg.xlsx&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Could Not Print&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>          0         1         2         3         4         5         6     \
+0     0.000000  0.000000  0.000000  0.000000  0.000000  0.000000  0.000000   
+1     0.000000  0.000000  0.000000  0.000000  0.000000  0.000000  0.000000   
+2     0.000000  0.000000  0.000000  0.000000  0.000000  0.000000  0.000000   
+3     0.000000  0.000000  0.000000  0.000000  0.000000  0.000000  0.000000   
+4     0.000000  0.000000  0.000000  0.000000  0.000000  0.000000  0.000000   
+...        ...       ...       ...       ...       ...       ...       ...   
+1932 -0.062887 -0.045410 -0.030788 -0.015647 -0.000703  0.006761  0.006593   
+1933 -0.018116 -0.001175  0.012217  0.029134  0.049624  0.061187  0.064045   
+1934  0.019343  0.033164  0.044749  0.059373  0.080334  0.089656  0.090959   
+1935  0.018220  0.030544  0.039534  0.050667  0.066392  0.071446  0.067996   
+1936 -0.010465 -0.001408  0.004918  0.010499  0.016445  0.014547  0.007995   
+
+          7         8         9     ...      2506      2507      2508  \
+0     0.000000  0.000000  0.000000  ...  0.089661  0.093775  0.099787   
+1     0.000000  0.000000  0.000000  ...  0.095537  0.099879  0.105638   
+2     0.000000  0.000000  0.000000  ...  0.092931  0.097331  0.102585   
+3     0.000000  0.000000  0.000000  ...  0.086500  0.090454  0.095004   
+4     0.000000  0.000000  0.000000  ...  0.080592  0.084507  0.089085   
+...        ...       ...       ...  ...       ...       ...       ...   
+1932 -0.003044 -0.020098 -0.037897  ...  0.143216  0.140639  0.139541   
+1933  0.056930  0.041966  0.025445  ...  0.134502  0.134118  0.135321   
+1934  0.084991  0.072440  0.057586  ...  0.129667  0.130847  0.133595   
+1935  0.058504  0.043714  0.029125  ...  0.123687  0.125230  0.127604   
+1936 -0.005090 -0.022842 -0.038351  ...  0.111403  0.112699  0.113915   
+
+          2509      2510      2511      2512      2513      2514      2515  
+0     0.107546  0.115251  0.121994  0.132224  0.143607  0.152826  0.163146  
+1     0.113721  0.121825  0.129108  0.139864  0.151947  0.162367  0.173818  
+2     0.110357  0.118253  0.125626  0.136681  0.149353  0.160687  0.172821  
+3     0.101781  0.109161  0.116379  0.127142  0.139457  0.150860  0.163002  
+4     0.094719  0.101725  0.109315  0.119747  0.130651  0.141244  0.153523  
+...        ...       ...       ...       ...       ...       ...       ...  
+1932  0.136043  0.132252  0.132986  0.131325  0.131134  0.135790  0.138645  
+1933  0.132891  0.130381  0.133082  0.134889  0.137623  0.144931  0.149332  
+1934  0.132369  0.130249  0.133401  0.137135  0.141110  0.148489  0.152352  
+1935  0.127056  0.124002  0.126536  0.131187  0.135260  0.141885  0.145868  
+1936  0.113041  0.107821  0.107061  0.109313  0.111195  0.115411  0.119207  
+
+[1937 rows x 2516 columns]
+</pre>
 </div>
 </div>
 
